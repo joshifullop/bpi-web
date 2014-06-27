@@ -33,6 +33,10 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
 	var options;
 	var chart;
 
+	var tempHLT;
+	var tempMash;
+
+
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -50,7 +54,10 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
         chart.draw(window.data, window.options);
       }
 
+	
+	// Set up functions and formatting
 
+	//SimpleDateFormat sdfHM = new SimpleDateFormat("H:m");
 
 
 
@@ -60,14 +67,21 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
 		//alert("test");
 		document.getElementById("phytase_sb").value = 10;
 		updateEnzymes();
+
+		var ulast = new Date();
+		
+		alert(ulast.getHours() + ":" + (ulast.getMinutes()-40));
+
+
+
 	}
 
 
 	function updateEnzymes()
 	{
-		mashTemp = document.getElementById("sensor2").innerHTML
-		document.getElementById("phytase_sb").value = mashTemp;
-
+		//temp2 = Float.parseFloat(document.getElementById("sensor2").innerHTML)
+		document.getElementById("phytase_sb").value = tempMash.toString();
+		document.getElementById("ttHLT").value = "abc"; //window.tempMash.toString();
 
 	}
 
@@ -82,6 +96,11 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
                 document.getElementById("sensor2").innerHTML = obj.t2;
                 document.getElementById("sensor3").innerHTML = obj.t3;
                 document.getElementById("sensor4").innerHTML = obj.t4;
+		tempHLT = Number(obj.t1);
+		window.tempMash = Number(obj.t2);
+		tempKettle = Number(obj.t3);
+		tempOther = Number(obj.t4);
+
 		var ulast = new Date(obj.utime * 1000);
 		updateEnzymes();
 		//document.getElementById("lastupdate").innerHTML = ulast.getHours() + ':' + ulast.getMinutes() + ':' + ulast.getSeconds();
@@ -89,7 +108,9 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
 //console.log(" obj type = " + typeof(obj));
 
 		var a = [];
+		//a[0] = ulast.getHours() + ":" + String.format("%02d", ulast.getMinutes());
 		a[0] = ulast.getHours() + ":" + ulast.getMinutes();
+		//a[0] = String.format("%tH:%tM", ulast);
 		a[1] = parseFloat(obj.t1);
                 a[2] = parseFloat(obj.t2);
                 a[3] = parseFloat(obj.t3);
@@ -155,7 +176,13 @@ n/a
 <div id="sensor1frame" style="width:200px;height:100%;background-color:#FF0000;float:left;">
 <fieldset>
 <legend>HLT</legend>
-<h1 id="sensor1" align='center'><?php printf("%.1f", $temp1); ?> C</h1><br>
+<h1 id="sensor1" align='center'><?php printf("%.1f", $temp1); ?> C</h1>
+<table style="font-size: 60%">
+<tr><td><b>Target Temp</b></td><td><center><input type="text" name="ttHLT" style='width:3em'></center></td><tr>
+<tr><td>Rate of Change</td><td name="rateHLT"><center>- deg/sec</center></td></tr>
+<tr><td>Time to Target</td><td name="etaHLT"><center>- min</center></td></tr>
+<tr><td><input type="checkbox" name="alertChkHLT">Alarm @</td><td><input type="text" name="alertValHLT" style='width:2em'><select name="alertTypeHLT"><option value="deg">Deg</option><option value="min">Min</option></select></td></tr>
+</table>
 </fieldset>
 </div>
 
