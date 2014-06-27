@@ -57,9 +57,19 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
 	function myFunction()
 	{
 		document.getElementById("sensor4").innerHTML="100.1 C";
-		alert("test");
+		//alert("test");
+		document.getElementById("phytase_sb").value = 10;
+		updateEnzymes();
 	}
 
+
+	function updateEnzymes()
+	{
+		mashTemp = document.getElementById("sensor2").innerHTML
+		document.getElementById("phytase_sb").value = mashTemp;
+
+
+	}
 
 	// Define SSE feeds
 	var source = new EventSource("fakesse.php");
@@ -73,6 +83,7 @@ if (($handle = fopen("/home/pi/barleypi/DisplaySession", "r")) !== FALSE) {
                 document.getElementById("sensor3").innerHTML = obj.t3;
                 document.getElementById("sensor4").innerHTML = obj.t4;
 		var ulast = new Date(obj.utime * 1000);
+		updateEnzymes();
 		//document.getElementById("lastupdate").innerHTML = ulast.getHours() + ':' + ulast.getMinutes() + ':' + ulast.getSeconds();
 		document.getElementById("lastupdate").innerHTML = ulast.toLocaleTimeString();
 //console.log(" obj type = " + typeof(obj));
@@ -125,7 +136,20 @@ n/a
 
 <div id="sensors" style=height:250px;width=100%;background-color:#666666">
 <div id="enzymes" style="width:200px;;height:100%;background-color:#9999FF;float:left;">
-Enzyme status
+<fieldset>
+<legend>Enzyme Activity</legend>
+
+<table style="font-size: 60%">  
+<colgroup id="enzymeColgroup" span="1"></colgroup>
+<tr><td>Phytase</td><td><progress id='phytase_sb' label='label1' value="22" max="100"></progress></td><td></td></tr>
+<tr><td>b-Glucanase</td><td><progress value="22" max="100"></progress></td><td></td></tr>
+<tr><td>Pepsidase</td><td><progress value="22" max="50" width=60px></progress></td><td></td></tr>
+<tr><td>Protease</td><td><progress value="22" max="100"></progress></td><td></td></tr>
+<tr><td>b-amylase</td><td><progress value="22" max="100"></progress></td><td></td></tr>
+<tr><td>a-amylase</td><td><progress value="22" max="100"></progress></td><td></td></tr>
+
+</table>
+</fieldset>
 </div>
 
 <div id="sensor1frame" style="width:200px;height:100%;background-color:#FF0000;float:left;">
